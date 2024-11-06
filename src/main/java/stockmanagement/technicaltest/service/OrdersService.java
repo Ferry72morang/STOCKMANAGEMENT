@@ -10,6 +10,7 @@ import stockmanagement.technicaltest.repository.ItemRepository;
 import stockmanagement.technicaltest.repository.OrdersRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrdersService {
@@ -31,9 +32,14 @@ public class OrdersService {
 
     // Create Order
     @Transactional
-    public Orders createOrder(Orders order) {
-        Item item = itemRepository.findById(order.getItem().getId())
-                .orElseThrow(() -> new Exception("Item not found"));
+    public Orders createOrder(Orders order) throws Exception {
+        Optional<Item> optionalItem = itemRepository.findById(order.getItem().getId());
+
+        if (optionalItem.isEmpty()) {
+            throw new Exception("Item Not Found");
+        }
+
+        Item item = optionalItem.get();
         if (item.getStock() < order.getQty()) {
             throw new Exception("Insufficient stock for item: " + item.getName());
         }

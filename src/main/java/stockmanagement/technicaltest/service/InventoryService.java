@@ -40,7 +40,7 @@ public class InventoryService {
     // Logic untuk memperbarui stok item berdasarkan type
     public void updateStock(Inventory inventory) {
         Item item = itemRepository.findById(inventory.getItem().getId())
-                .orElseThrow(() -> new RuntimeException("Item with name: " + inventory.getItem().getName() + "not found!"));
+                .orElseThrow(() -> new RuntimeException("Item with name: " + inventory.getItem().getName() + " not found!"));
          if (inventory.getType().equals("T")) {
              item.setStock(item.getStock() + inventory.getQty());
          } else if (inventory.getType().equals("W")) {

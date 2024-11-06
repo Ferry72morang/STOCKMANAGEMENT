@@ -65,6 +65,7 @@ public class OrdersController {
 
     @PostMapping
     public ResponseEntity<?> saveOrder(@RequestBody Orders order) {
+        LinkedHashMap<String, Object> resp = new LinkedHashMap<>();
         try {
             validateOrders(order);
             Orders createdOrder = orderService.createOrder(order);
@@ -72,7 +73,7 @@ public class OrdersController {
             resp.put("message", "Successfully Save Order!");
             resp.put("id", createdOrder.getId());
             return ResponseEntity.status(201).body(resp);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             resp.put("status", false);
             resp.put("message", ex.getMessage());
             return ResponseEntity.badRequest().body(resp);
