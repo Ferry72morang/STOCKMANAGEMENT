@@ -64,12 +64,18 @@ public class OrdersController {
     }
 
     @PostMapping
-    public ResponseEntity<Orders> saveOrder(@RequestBody Orders order) {
+    public ResponseEntity<?> saveOrder(@RequestBody Orders order) {
         try {
+            validateOrders(order);
             Orders createdOrder = orderService.createOrder(order);
-            return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            resp.put("status", true);
+            resp.put("message", "Successfully Save Order!");
+            resp.put("id", createdOrder.getId());
+            return ResponseEntity.status(201).body(resp);
+        } catch (Exception e) {
+            resp.put("status", false);
+            resp.put("message", ex.getMessage());
+            return ResponseEntity.badRequest().body(resp);
         }
     }
 
@@ -90,6 +96,27 @@ public class OrdersController {
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    public static void validateOrders(Orders orders)throws Exception{
+        if(orders.getOrderNo() == null){
+            throw new Exception("OrderNo is null");
+        }
+        if(orders.getItem() == null){
+            throw new Exception("Item is null");
+        }
+
+        if (orders.getQty() == null) {
+            throw new Exception("Quantity is null");
+        }
+
+        if (orders.getQty() <= 0) {
+            throw new Exception("Quantity must be greater than zero");
+        }
+
+        if (orders.getPrice() == null) {
+            throw new Exception("Price is null");
         }
     }
 }

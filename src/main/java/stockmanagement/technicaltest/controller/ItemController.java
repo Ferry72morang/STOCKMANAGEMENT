@@ -70,9 +70,20 @@ public class ItemController {
 
 
     @PostMapping
-    public ResponseEntity<Item> saveItem(@RequestBody Item item) {
-        Item savedItem = itemService.saveItem(item);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
+    public ResponseEntity<?> saveItem(@RequestBody Item item) {
+        LinkedHashMap<String, Object> resp = new LinkedHashMap<>();
+        try{
+            validateItems(item);
+            Item savedItem = itemService.saveItem(item);
+            resp.put("status", true);
+            resp.put("message", "Successfully Save Item!");
+            resp.put("id", savedItem.getId());
+            return ResponseEntity.status(201).body(resp);
+        }catch(Exception ex){
+            resp.put("status", false);
+            resp.put("message", ex.getMessage());
+            return ResponseEntity.badRequest().body(resp);
+        }
     }
 
     @PutMapping("/{id}")
@@ -86,6 +97,15 @@ public class ItemController {
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
         return ResponseEntity.noContent().build();
+    }
+
+    public static void validateItems(Item item)throws Exception{
+        if(item.getName() == null){
+            throw new Exception("Name is null");
+        }
+        if(item.getPrice() == null){
+            throw new Exception("Price is null");
+        }
     }
 
 

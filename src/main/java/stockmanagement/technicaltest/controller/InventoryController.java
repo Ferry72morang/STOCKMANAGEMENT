@@ -77,12 +77,11 @@ public class InventoryController {
             inventoryService.updateStock(inventory);
             resp.put("status", true);
             resp.put("message", "Successfully Save Inventories!");
-            resp.put("id", inventory.getId());
+            resp.put("id", savedInventory.getId());
             return ResponseEntity.status(201).body(resp);
         }catch (Exception ex){
             resp.put("status", false);
             resp.put("message", ex.getMessage());
-
             return ResponseEntity.badRequest().body(resp);
         }
 

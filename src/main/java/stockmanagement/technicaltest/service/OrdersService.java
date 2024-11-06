@@ -33,9 +33,9 @@ public class OrdersService {
     @Transactional
     public Orders createOrder(Orders order) {
         Item item = itemRepository.findById(order.getItem().getId())
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+                .orElseThrow(() -> new Exception("Item not found"));
         if (item.getStock() < order.getQty()) {
-            throw new RuntimeException("Insufficient stock for item: " + item.getName());
+            throw new Exception("Insufficient stock for item: " + item.getName());
         }
 
         // Decreased stock item
